@@ -1,0 +1,1382 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE DAOConfiguration [
+
+	<!ELEMENT DAOConfiguration (DAOStatements+)>
+
+	<!ELEMENT DAOStatements (SQLStatement+)>
+	<!ATTLIST DAOStatements
+		database CDATA #REQUIRED
+	>
+ 
+	<!ELEMENT SQLStatement (SQLFragment+)>
+	<!ATTLIST SQLStatement
+		method (COUNT_TABLE|GET_ITEMS_REFERENCE|CHECK_TABLE|CHECK_TABLE_USERS|GET_MAX_ITEMID
+                    |CREATE_USERS_TABLE|INSERT_USER|INSERT_USER_FULL|UPDATE_USER_USERNAME
+                    |UPDATE_USER_ACCESS|UPDATE_USER_PASSWORD|DELETE_USER|GET_USER
+                    |GET_USER_LIMIT|CHECK_USER_PASSWORD|DROP_TABLE|TRUNCATE_TABLE|CREATE_PERSONS_TABLE
+                    |GET_PERSON|GET_PERSON_LIMIT|INSERT_PERSON|UPDATE_PERSON|CREATE_LIDERS_TABLE
+                    |GET_LIDER|GET_LIDER_LIMIT|INSERT_LIDER|CREATE_VOTING_PLACES_TABLE|GET_VOTING_PLACE
+                    |INSERT_VOTING_PLACE|CREATE_WITNESS_TABLE|GET_WITNESS|INSERT_WITNESS
+                    |CREATE_JURYS_TABLE|INSERT_JURY|GET_JURY|CREATE_ITEMS_TABLE|INSERT_ITEM
+                    |GET_ITEM|DELETE_ITEM|UPDATE_ITEM|CREATE_ITEMS_PUBLICITY_TABLE|GET_ITEM_PUBLICITY
+                    |INSERT_ITEM_PUBLICITY|DELETE_ITEM_PUBLICITY|CREATE_VEHICLES_TABLE
+                    |GET_VEHICLE|INSERT_VEHICLE|DELETE_VEHICLE|CREATE_AUDITORS_TABLE
+                    |GET_AUDITOR|INSERT_AUDITOR|DELETE_AUDITOR|CREATE_AUDITTASKS_TABLE|GET_AUDITTASK|INSERT_AUDITTASK
+                    |DELETE_AUDITTASK|UPDATE_AUDITTASK|GET_VOTING_PLACE_POTENCIAL
+                    |DELETE_LIDER|DELETE_PERSON|DELETE_PERSON_WHERE|UPDATE_VOTING_PLACE_PERSON
+                    |CREATE_LEADERS_TABLE|GET_LEADER|INSERT_LEADER|UPDATE_LEADER|DELETE_LEADER|UPDATE_ROL_PERSON
+                    |CREATE_NEIGHBORHOODS_TABLE|GET_NEIGHBORHOOD|INSERT_NEIGHBORHOOD|DELETE_NEIGHBORHOOD
+                    |UPDATE_NEIGHBORHOOD|GET_COMMUNE_LIST|CREATE_ELECTIONS_TABLE|GET_ELECTION
+                    |CREATE_FOCUS_PLACES_TABLE
+                    |CREATE_LEADERS_CAMPAIGN_TABLE|GET_LEADER_CAMPAIGN|INSERT_LEADER_CAMPAIGN|DELETE_LEADER_CAMPAIGN
+                    |COUNT_TABLE2|GET_ID_PERSON|GET_PERSON_NAMES
+                    |CREATE_CONFIG_TABLE|GET_CONFIG|DELETE_CONFIG|UPDATE_CONFIG|EXIST_CONFIG
+                    |ADD_CONFIG|GET_PERSON_LIDER|GET_LIDER_SUPPORT|UPDATE_LIDER
+                    |CREATE_CONTRACTS_TABLE|GET_CONTRACT|INSERT_CONTRACT|UPDATE_CONTRACT|DELETE_CONTRACT
+                    |CREATE_TYPE_VEHICLES_TABLE|GET_TYPE_VEHICLE|ADD_TYPE_VEHICLE
+                    |DELETE_TYPE_VEHICLE|UPDATE_TYPE_VEHICLE
+                    |CREATE_CANDIDATES_TABLE|GET_CANDIDATE|GET_RANCHERY_LIST
+                    |GET_COMMUNES_LIST|ADD_CANDIDATE
+                    |CREATE_NOVELTYS_TABLE|GET_NOVELTY|ADD_NOVELTY|DELETE_NOVELTY
+                    |CREATE_UPDATES_TABLE
+                    |CREATE_RESPONSIBLES_TABLE|ADD_RESPONSIBLE|DELETE_RESPONSIBLE|GET_RESPONSIBLES_LIST
+                    |EXIST_CLAVE|GET_MAX_ID|GET_COMUNITY_LIST) #REQUIRED
+                    
+	>
+
+	<!ELEMENT SQLFragment (#PCDATA)>
+	<!ATTLIST SQLFragment
+		excludeIfNamedParamEmpty (TRUE|FALSE) "FALSE"
+	>
+]>
+
+
+
+<DAOConfiguration>	
+    <!-- MYSQL -->
+    <DAOStatements database="mysql">
+        <SQLStatement method="COUNT_TABLE">
+            <SQLFragment>
+                SELECT count(*) FROM ({query}) AS counted
+            </SQLFragment>
+        </SQLStatement>
+
+        <SQLStatement method="CHECK_TABLE">
+            <SQLFragment>
+                SELECT count(*) FROM {table} WHERE 1=2
+            </SQLFragment>
+        </SQLStatement>
+		
+        <SQLStatement method="CREATE_USERS_TABLE">
+            <SQLFragment>
+                CREATE TABLE users (
+                id INTEGER NOT NULL AUTO_INCREMENT,
+                username VARCHAR(255),
+                password VARCHAR(255),
+                access_level VARCHAR(255),
+                UNIQUE (username),
+                PRIMARY KEY (id)
+                );
+            </SQLFragment>
+        </SQLStatement>
+		
+        <SQLStatement method="INSERT_USER">
+            <SQLFragment>
+                INSERT INTO users VALUES (null, ?, ?, ?);
+            </SQLFragment>
+        </SQLStatement>
+		
+        <SQLStatement method="INSERT_USER_FULL">
+            <SQLFragment>
+                INSERT INTO users VALUES (?, ?, ?, ?);
+            </SQLFragment>
+        </SQLStatement>
+		
+        <SQLStatement method="UPDATE_USER_USERNAME">
+            <SQLFragment>
+                UPDATE users SET username = ? WHERE id = ?;
+            </SQLFragment>
+        </SQLStatement>
+		
+        <SQLStatement method="UPDATE_USER_ACCESS">
+            <SQLFragment>
+                UPDATE users SET access_level = ? WHERE id = ?;
+            </SQLFragment>
+        </SQLStatement>
+		
+        <SQLStatement method="UPDATE_USER_PASSWORD">
+            <SQLFragment>
+                UPDATE users SET password = ? WHERE id = ?;
+            </SQLFragment>
+        </SQLStatement>
+		
+        <SQLStatement method="DELETE_USER">
+            <SQLFragment>
+                DELETE FROM users WHERE username = ?;
+            </SQLFragment>
+        </SQLStatement>
+		
+        <SQLStatement method="GET_USER_LIMIT">
+            <SQLFragment>
+                SELECT
+            </SQLFragment>
+            <SQLFragment>
+                id, username, access_level
+                FROM users
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                WHERE {where}
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                ORDER BY {orderby}
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                LIMIT ?, ?
+            </SQLFragment>
+        </SQLStatement>
+		
+        <SQLStatement method="GET_USER">
+            <SQLFragment>
+                SELECT
+            </SQLFragment>
+            <SQLFragment>
+                id, username, access_level
+                FROM users
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                WHERE {where}
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                ORDER BY {orderby}
+            </SQLFragment>
+        </SQLStatement>
+		
+        <SQLStatement method="CHECK_USER_PASSWORD">
+            <SQLFragment>
+                SELECT password, id, access_level FROM users WHERE username = ? AND STRCMP(BINARY password, ?) = 0;
+            </SQLFragment>
+        </SQLStatement>		
+		
+        <SQLStatement method="CREATE_PERSONS_TABLE">
+            <SQLFragment>
+                CREATE TABLE persons (
+                id INTEGER AUTO_INCREMENT,
+                identification INTEGER NOT NULL UNIQUE,
+                firstName1 VARCHAR(255),
+                firstName2 VARCHAR(255),
+                lastName1 VARCHAR(255),
+                lastName2 VARCHAR(255),
+                lider INTEGER,					
+                cellphone VARCHAR(15),
+                profession VARCHAR(255),
+                address VARCHAR(255),
+                place1 VARCHAR(255),
+                typePlace VARCHAR(255),
+                neighborhood VARCHAR(255),                
+                birthday DATE,
+                email VARCHAR(255),
+                votingPlace VARCHAR(255),
+                votingTable INTEGER,
+                witness TINYINT(1) DEFAULT '0',
+                jury TINYINT(1) DEFAULT '0',
+                volunteer TINYINT(1) DEFAULT '0',
+                giveVehicle TINYINT(1) DEFAULT '0',
+                typeVehicle VARCHAR(255),
+                compromise VARCHAR(255),
+                photo BLOB DEFAULT NULL,
+                lastUpdatedTime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                PRIMARY KEY (id));
+            </SQLFragment>
+        </SQLStatement>		
+        
+        <SQLStatement method="GET_PERSON">
+            <SQLFragment>
+                SELECT
+            </SQLFragment>
+            <SQLFragment>
+                *
+                FROM persons
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                WHERE {where}
+            </SQLFragment>    
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                ORDER BY {orderby} 
+            </SQLFragment>
+            
+        </SQLStatement>
+        
+        <SQLStatement method="GET_ID_PERSON">
+            <SQLFragment>
+                SELECT
+            </SQLFragment>
+            <SQLFragment>
+                identification
+                FROM persons
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                WHERE {where}
+            </SQLFragment>    
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                ORDER BY {orderby} 
+            </SQLFragment>
+            
+        </SQLStatement>
+        
+        <SQLStatement method="GET_PERSON_LIMIT">
+            <SQLFragment>
+                SELECT
+            </SQLFragment>
+            <SQLFragment>
+                *
+                FROM persons
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                WHERE {where}
+            </SQLFragment>    
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                ORDER BY {orderby} 
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                LIMIT {start}, {num}
+            </SQLFragment>
+        </SQLStatement>
+        
+        
+        <SQLStatement method="UPDATE_PERSON">
+            <SQLFragment>
+                UPDATE persons SET 
+                firstName1=?,
+                firstName2=?,
+                lastName1=?,
+                lastName2=?,
+                lider=?,
+                cellphone=?,
+                profession=?,
+                address=?,
+                place1=?,
+                typePlace=?,
+                neighborhood=?,                
+                birthday=?,
+                email=?,
+                votingPlace=?,
+                votingTable=?,
+                witness=?,
+                jury=?,
+                volunteer=?,
+                giveVehicle=?,
+                typeVehicle=?,
+                compromise=?,
+                photo=? 
+                WHERE identification = ?
+            </SQLFragment>
+        </SQLStatement>
+        
+        <SQLStatement method="INSERT_PERSON">
+            <SQLFragment>
+                INSERT INTO persons (identification,firstName1,firstName2,
+                lastName1,lastName2,lider,cellphone,profession,
+                address,place1,typePlace,neighborhood,birthday,email,votingPlace,
+                votingTable,witness,jury,volunteer,giveVehicle,typeVehicle,
+                compromise,photo) 
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);
+            </SQLFragment>
+        </SQLStatement>	
+        
+        <SQLStatement method="UPDATE_ROL_PERSON">
+            <SQLFragment>
+                UPDATE persons SET 
+                lider=?,
+                witness=?,
+                jury=?,
+                volunteer=?
+                WHERE identification = ?
+            </SQLFragment>
+        </SQLStatement>
+        
+        <SQLStatement method="UPDATE_VOTING_PLACE_PERSON">
+            <SQLFragment>
+                UPDATE persons SET 
+                votingPlace=?,
+                votingTable=?
+                WHERE identification = ?
+            </SQLFragment>
+        </SQLStatement>
+        
+        <SQLStatement method="DELETE_PERSON">
+            <SQLFragment>
+                DELETE FROM persons WHERE identification = ?;
+            </SQLFragment>
+        </SQLStatement>		
+        
+        <SQLStatement method="DELETE_PERSON_WHERE">
+            <SQLFragment>
+                DELETE FROM persons
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                WHERE {where}
+            </SQLFragment>
+        </SQLStatement>		
+	       
+        <SQLStatement method="CREATE_LIDERS_TABLE">
+            <SQLFragment>
+                CREATE TABLE liders (
+                id INTEGER AUTO_INCREMENT,
+                identification INTEGER NOT NULL UNIQUE,
+                gobernacion VARCHAR(255),
+                alcaldia VARCHAR(255),
+                asamblea VARCHAR(255),
+                consejo VARCHAR(255),
+                responsable INTEGER,
+                lastUpdatedTime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                PRIMARY KEY (id));
+            </SQLFragment>
+        </SQLStatement>		
+        
+        <SQLStatement method="GET_LIDER">
+            <SQLFragment>
+                SELECT
+            </SQLFragment>
+            <SQLFragment>
+                *
+                FROM liders
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                WHERE {where}
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                ORDER BY {orderby}
+            </SQLFragment>
+        </SQLStatement>
+        
+        <SQLStatement method="GET_LIDER_LIMIT">
+            <SQLFragment>
+                SELECT
+            </SQLFragment>
+            <SQLFragment>
+                *
+                FROM liders
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                WHERE {where}
+            </SQLFragment>    
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                ORDER BY {orderby} 
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                LIMIT {start}, {num}
+            </SQLFragment>
+        </SQLStatement>
+        
+        <SQLStatement method="INSERT_LIDER">
+            <SQLFragment>
+                INSERT INTO liders (identification, gobernacion, alcaldia, asamblea, consejo,responsable) VALUES (?,?,?,?,?,?);
+            </SQLFragment>
+        </SQLStatement>	   
+        
+        <SQLStatement method="DELETE_LIDER">
+            <SQLFragment>
+                DELETE FROM liders WHERE identification = ?;
+            </SQLFragment>
+        </SQLStatement>	
+        
+        <SQLStatement method="UPDATE_LIDER">
+            <SQLFragment>
+                UPDATE liders SET 
+                gobernacion=?,
+                alcaldia=?,
+                asamblea=?,
+                consejo=?,
+                responsable=?,
+                WHERE identification = ?
+            </SQLFragment>
+        </SQLStatement>
+        
+        <SQLStatement method="CREATE_LEADERS_TABLE">
+            <SQLFragment>
+                CREATE TABLE leaders (
+                id INTEGER AUTO_INCREMENT,
+                identification INTEGER NOT NULL UNIQUE,
+                lastUpdatedTime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                PRIMARY KEY (id));
+            </SQLFragment>
+        </SQLStatement>		
+        
+        <SQLStatement method="GET_LEADER">
+            <SQLFragment>
+                SELECT
+            </SQLFragment>
+            <SQLFragment>
+                *
+                FROM leaders
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                WHERE {where}
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                ORDER BY {orderby}
+            </SQLFragment>
+        </SQLStatement>
+        
+        <SQLStatement method="INSERT_LEADER">
+            <SQLFragment>
+                INSERT INTO leaders (identification) VALUES (?);
+            </SQLFragment>
+        </SQLStatement>	   
+               
+        <SQLStatement method="DELETE_LEADER">
+            <SQLFragment>
+                DELETE FROM leaders WHERE identification = ?;
+            </SQLFragment>
+        </SQLStatement>	
+        
+        <SQLStatement method="CREATE_LEADERS_CAMPAIGN_TABLE">
+            <SQLFragment>
+                CREATE TABLE campaignleaders (
+                id INTEGER AUTO_INCREMENT,
+                identification INTEGER NOT NULL UNIQUE,
+                lastUpdatedTime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                PRIMARY KEY (id));
+            </SQLFragment>
+        </SQLStatement>		
+        
+        <SQLStatement method="GET_LEADER_CAMPAIGN">
+            <SQLFragment>
+                SELECT
+            </SQLFragment>
+            <SQLFragment>
+                *
+                FROM campaignleaders
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                WHERE {where}
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                ORDER BY {orderby}
+            </SQLFragment>
+        </SQLStatement>
+        
+        <SQLStatement method="INSERT_LEADER_CAMPAIGN">
+            <SQLFragment>
+                INSERT INTO campaignleaders (identification) VALUES (?);
+            </SQLFragment>
+        </SQLStatement>	   
+                
+        <SQLStatement method="DELETE_LEADER_CAMPAIGN">
+            <SQLFragment>
+                DELETE FROM campaignleaders WHERE identification = ?;
+            </SQLFragment>
+        </SQLStatement>	
+        
+        <SQLStatement method="CREATE_LEADERS_TABLE">
+            <SQLFragment>
+                CREATE TABLE leaders (
+                id INTEGER AUTO_INCREMENT,
+                identification INTEGER NOT NULL UNIQUE,
+                lastUpdatedTime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                PRIMARY KEY (id));
+            </SQLFragment>
+        </SQLStatement>		
+        
+        <SQLStatement method="GET_LEADER">
+            <SQLFragment>
+                SELECT
+            </SQLFragment>
+            <SQLFragment>
+                *
+                FROM leaders
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                WHERE {where}
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                ORDER BY {orderby}
+            </SQLFragment>
+        </SQLStatement>
+        
+        <SQLStatement method="INSERT_LEADER">
+            <SQLFragment>
+                INSERT INTO leaders (identification) VALUES (?);
+            </SQLFragment>
+        </SQLStatement>	   
+        
+        <SQLStatement method="DELETE_LEADER">
+            <SQLFragment>
+                DELETE FROM leaders WHERE identification = ?;
+            </SQLFragment>
+        </SQLStatement>	
+        
+        <SQLStatement method="CREATE_VOTING_PLACES_TABLE">
+            <SQLFragment>
+                CREATE TABLE voting_places (
+                id INTEGER NOT NULL AUTO_INCREMENT,
+                codigo VARCHAR(255) NOT NULL UNIQUE,
+                department VARCHAR(255) DEFAULT NULL,
+                municipality VARCHAR(255) DEFAULT NULL,
+                zone INTEGER DEFAULT 0,
+                place VARCHAR(255) DEFAULT NULL,
+                address VARCHAR(255) DEFAULT NULL,
+                PRIMARY KEY(id));    
+            </SQLFragment>
+        </SQLStatement>	 
+        
+        <SQLStatement method="GET_VOTING_PLACE">
+            <SQLFragment>
+                SELECT
+            </SQLFragment>
+            <SQLFragment>
+                *
+                FROM voting_places
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                WHERE {where}
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                ORDER BY {orderby}
+            </SQLFragment>
+        </SQLStatement>   
+        
+        <SQLStatement method="INSERT_VOTING_PLACE">
+            <SQLFragment>
+                INSERT IGNORE INTO voting_places (codigo,department,municipality,zone,place,address) VALUES (?,?,?,?,?,?);
+            </SQLFragment>
+        </SQLStatement>	
+        
+        <SQLStatement method="GET_VOTING_PLACE_POTENCIAL">
+            <SQLFragment>
+                SELECT count(*) FROM persons
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                WHERE {where}
+            </SQLFragment>
+        </SQLStatement>	
+        
+        <SQLStatement method="CREATE_WITNESS_TABLE">
+            <SQLFragment>  
+                CREATE TABLE witness(
+                id INTEGER NOT NULL AUTO_INCREMENT,
+                identification INTEGER NOT NULL,
+                idPlace INTEGER,
+                table INTEGER,
+                PRIMARY KEY (id));
+            </SQLFragment>
+        </SQLStatement>	    
+        
+        <SQLStatement method="GET_WITNESS">
+            <SQLFragment>
+                SELECT
+            </SQLFragment>
+            <SQLFragment>
+                *
+                FROM witness
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                WHERE {where}
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                ORDER BY {orderby}
+            </SQLFragment>
+        </SQLStatement>   
+        
+        <SQLStatement method="INSERT_WITNESS">
+            <SQLFragment>
+                INSERT INTO witness VALUES (?,?,?);
+            </SQLFragment>
+        </SQLStatement>	
+        
+        <SQLStatement method="CREATE_JURYS_TABLE">
+            <SQLFragment>  
+                CREATE TABLE jurys(
+                id INTEGER NOT NULL AUTO_INCREMENT,
+                identification INTEGER NOT NULL,
+                idPlace INTEGER,
+                table INTEGER,
+                PRIMARY KEY (id));
+            </SQLFragment>
+        </SQLStatement>	    
+        
+        <SQLStatement method="GET_JURY">
+            <SQLFragment>
+                SELECT
+            </SQLFragment>
+            <SQLFragment>
+                *
+                FROM jury
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                WHERE {where}
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                ORDER BY {orderby}
+            </SQLFragment>
+        </SQLStatement>   
+        
+        <SQLStatement method="INSERT_JURY">
+            <SQLFragment>
+                INSERT INTO jury VALUES (?,?,?);
+            </SQLFragment>
+        </SQLStatement>	
+        
+        
+        <SQLStatement method="CREATE_ITEMS_TABLE">
+            <SQLFragment>
+                CREATE TABLE items (
+                id INTEGER NOT NULL AUTO_INCREMENT,
+                name VARCHAR(255) NOT NULL UNIQUE,
+                stock INTEGER NOT NULL DEFAULT 0,
+                picture VARCHAR(500) DEFAULT NULL,
+                PRIMARY KEY(id));    
+            </SQLFragment>
+        </SQLStatement>	 
+        
+        <SQLStatement method="GET_ITEM">
+            <SQLFragment>
+                SELECT
+            </SQLFragment>
+            <SQLFragment>
+                *
+                FROM items
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                WHERE {where}
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                ORDER BY {orderby}
+            </SQLFragment>
+        </SQLStatement>   
+        
+        <SQLStatement method="INSERT_ITEM">
+            <SQLFragment>
+                INSERT INTO items (name, stock, picture) VALUES (?,?,?);
+            </SQLFragment>
+        </SQLStatement>	
+        
+        <SQLStatement method="DELETE_ITEM">
+            <SQLFragment>
+                DELETE FROM items WHERE id  = ?;
+            </SQLFragment>
+        </SQLStatement>
+        
+        <SQLStatement method="UPDATE_ITEM">
+            <SQLFragment>
+                UPDATE items SET 
+                stock=?,
+                picture=? 
+                WHERE name = ? OR id = ?
+            </SQLFragment>
+        </SQLStatement>
+        
+        <SQLStatement method="CREATE_ITEMS_PUBLICITY_TABLE">
+            <SQLFragment>
+                CREATE TABLE items_publicity (
+                id INTEGER NOT NULL AUTO_INCREMENT,
+                idItem INTEGER NOT NULL,
+                idPerson INTEGER NOT NULL,
+                cantidad INTEGER NOT NULL DEFAULT 0,
+                barrio VARCHAR(255) DEFAULT NULL,
+                extra VARCHAR(255) DEFAULT NULL,
+                fecha DATE,
+                PRIMARY KEY(id));    
+            </SQLFragment>
+        </SQLStatement>	 
+        
+        <SQLStatement method="GET_ITEM_PUBLICITY">
+            <SQLFragment>
+                SELECT
+            </SQLFragment>
+            <SQLFragment>
+                t1.id, t2.id AS idItem, t2.name, t2.picture, t1.idPerson, t1.cantidad, t1.barrio, t1.extra, t1.fecha
+                FROM items_publicity AS t1, items AS t2 WHERE t1.idItem=t2.id            
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                AND {where}
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                ORDER BY {orderby}
+            </SQLFragment>
+        </SQLStatement>   
+        
+        <SQLStatement method="INSERT_ITEM_PUBLICITY">
+            <SQLFragment>
+                INSERT INTO items_publicity (idItem, idPerson, cantidad, barrio, extra, fecha) VALUES (?,?,?,?,?,?);
+            </SQLFragment>
+        </SQLStatement>	
+        
+        <SQLStatement method="DELETE_ITEM_PUBLICITY">
+            <SQLFragment>
+                DELETE FROM items_publicity WHERE id  = ?;
+            </SQLFragment>
+        </SQLStatement>        
+        
+        <SQLStatement method="CREATE_VEHICLES_TABLE">
+            <SQLFragment>
+                CREATE TABLE vehicles (
+                id INTEGER NOT NULL AUTO_INCREMENT,
+                placa VARCHAR(15) NOT NULL UNIQUE,
+                type VARCHAR(255) NOT NULL,
+                propietary INTEGER NOT NULL,
+                capacity INTEGER,
+                PRIMARY KEY(id));    
+            </SQLFragment>
+        </SQLStatement>	 
+        
+        <SQLStatement method="GET_VEHICLE">
+            <SQLFragment>
+                SELECT
+            </SQLFragment>
+            <SQLFragment>
+                *
+                FROM vehicles
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                WHERE {where}
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                ORDER BY {orderby}
+            </SQLFragment>
+        </SQLStatement>   
+        
+        <SQLStatement method="INSERT_VEHICLE">
+            <SQLFragment>
+                INSERT INTO vehicles (placa,type,propietary,capacity) VALUES (?,?,?,?);
+            </SQLFragment>
+        </SQLStatement>	
+        
+        <SQLStatement method="DELETE_VEHICLE">
+            <SQLFragment>
+                DELETE FROM vehicles WHERE placa  = ?;
+            </SQLFragment>
+        </SQLStatement>
+        
+        <SQLStatement method="CREATE_AUDITORS_TABLE">
+            <SQLFragment>
+                CREATE TABLE auditors (
+                id INTEGER AUTO_INCREMENT,
+                identification INTEGER NOT NULL UNIQUE,
+                lastUpdatedTime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                PRIMARY KEY (id));
+            </SQLFragment>
+        </SQLStatement>		
+        
+        <SQLStatement method="GET_AUDITOR">
+            <SQLFragment>
+                SELECT
+            </SQLFragment>
+            <SQLFragment>
+                *
+                FROM auditors
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                WHERE {where}
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                ORDER BY {orderby}
+            </SQLFragment>
+        </SQLStatement>
+        
+        <SQLStatement method="INSERT_AUDITOR">
+            <SQLFragment>
+                INSERT INTO auditors (identification) VALUES (?);
+            </SQLFragment>
+        </SQLStatement>
+        
+        <SQLStatement method="DELETE_AUDITOR">
+            <SQLFragment>
+                DELETE FROM auditors WHERE identification = ?;
+            </SQLFragment>
+        </SQLStatement>
+        
+        
+        <SQLStatement method="CREATE_AUDITTASKS_TABLE">
+            <SQLFragment>
+                CREATE TABLE audit_task (
+                id INTEGER NOT NULL AUTO_INCREMENT,
+                idPublicity INTEGER NOT NULL,
+                responsible INTEGER NOT NULL,
+                dateAssign TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                dateEnd TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                description VARCHAR(255) DEFAULT NULL,
+                report VARCHAR(255) DEFAULT NULL,
+                status VARCHAR(255),          
+                PRIMARY KEY(id));    
+            </SQLFragment>
+        </SQLStatement>	 
+        
+        <SQLStatement method="GET_AUDITTASK">
+            <SQLFragment>
+                SELECT
+            </SQLFragment>
+            <SQLFragment>
+                *
+                FROM audit_task            
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                WHERE {where}
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                ORDER BY {orderby}
+            </SQLFragment>
+        </SQLStatement>   
+        
+        <SQLStatement method="INSERT_AUDITTASK">
+            <SQLFragment>
+                INSERT INTO audit_task (idPublicity,responsible,dateAssign,dateEnd,
+                description,report,status) VALUES (?,?,?,?,?,?,?);
+            </SQLFragment>
+        </SQLStatement>	
+        
+        <SQLStatement method="UPDATE_AUDITTASK">
+            <SQLFragment>
+                UPDATE audit_task SET                 
+                idPublicity = ?,
+                responsible = ?,
+                dateAssign = ?,
+                dateEnd = ?,
+                description = ?,
+                report = ?,
+                status = ?
+                WHERE id =?
+            </SQLFragment>
+        </SQLStatement>
+        
+        <SQLStatement method="DELETE_AUDITTASK">
+            <SQLFragment>
+                DELETE FROM audit_task WHERE id  = ?;
+            </SQLFragment>
+        </SQLStatement>    
+        
+        <SQLStatement method="CREATE_NEIGHBORHOODS_TABLE">
+            <SQLFragment>
+                CREATE TABLE neighborhoods (
+                id INTEGER NOT NULL AUTO_INCREMENT,                
+                name VARCHAR(255) NOT NULL UNIQUE,
+                commune VARCHAR(255) DEFAULT NULL,
+                PRIMARY KEY(id));    
+            </SQLFragment>
+        </SQLStatement>	 
+        
+        <SQLStatement method="GET_NEIGHBORHOOD">
+            <SQLFragment>
+                SELECT
+            </SQLFragment>
+            <SQLFragment>
+                *
+                FROM neighborhoods            
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                WHERE {where}
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                ORDER BY {orderby}
+            </SQLFragment>
+        </SQLStatement>   
+        
+        <SQLStatement method="INSERT_NEIGHBORHOOD">
+            <SQLFragment>
+                INSERT INTO neighborhoods (name, commune) VALUES (?,?);
+            </SQLFragment>
+        </SQLStatement>	
+        
+        <SQLStatement method="UPDATE_NEIGHBORHOOD">
+            <SQLFragment>
+                UPDATE neighborhoods SET                 
+                name = ?,
+                commune = ?
+                WHERE id =?
+            </SQLFragment>
+        </SQLStatement>
+        
+        <SQLStatement method="DELETE_NEIGHBORHOOD">
+            <SQLFragment>
+                DELETE FROM neighborhoods WHERE id  = ?;
+            </SQLFragment>
+        </SQLStatement>    
+        
+        <SQLStatement method="CREATE_ELECTIONS_TABLE">
+            <SQLFragment>
+                CREATE TABLE elections (
+                id INTEGER NOT NULL AUTO_INCREMENT, 
+                code VARCHAR(255) NOT NULL UNIQUE,
+                type INTEGER,
+                department VARCHAR(255),
+                municipality VARCHAR(255),
+                idCandidate VARCHAR(255),                                             
+                PRIMARY KEY(id));    
+            </SQLFragment>
+        </SQLStatement>	 
+        
+        <SQLStatement method="GET_ELECTION">
+            <SQLFragment>
+                SELECT
+            </SQLFragment>
+            <SQLFragment>
+                *
+                FROM elections
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                WHERE {where}
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                ORDER BY {orderby}
+            </SQLFragment>
+        </SQLStatement>   
+              
+        <SQLStatement method="CREATE_FOCUS_PLACES_TABLE">
+            <SQLFragment>
+                CREATE TABLE focus_places (
+                id INTEGER NOT NULL AUTO_INCREMENT,
+                code VARCHAR(255) NOT NULL,
+                election VARCHAR(255) NOT NULL,
+                PRIMARY KEY(id));    
+            </SQLFragment>
+        </SQLStatement>	
+              
+        <SQLStatement method="GET_COMMUNE_LIST">
+            <SQLFragment>
+                SELECT DISTINCT commune FROM neighborhoods 
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                WHERE {where}
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                ORDER BY {orderby}
+            </SQLFragment>
+        </SQLStatement>   
+                
+        <SQLStatement method="DROP_TABLE">
+            <SQLFragment>
+                DROP TABLE {table};
+            </SQLFragment>
+        </SQLStatement>
+        
+        <SQLStatement method="TRUNCATE_TABLE">
+            <SQLFragment>
+                TRUNCATE TABLE {table};
+            </SQLFragment>
+        </SQLStatement>
+		
+        <SQLStatement method="GET_MAX_ITEMID">
+            <SQLFragment>
+                SELECT max(id) FROM items
+            </SQLFragment>
+        </SQLStatement>
+        
+        <SQLStatement method="GET_ITEMS_REFERENCE">
+            <SQLFragment>
+                SELECT DISTINCT referencia FROM products_imported
+            </SQLFragment>
+        </SQLStatement>
+        
+        <SQLStatement method="CHECK_TABLE_USERS">
+            <SQLFragment>
+                SELECT count(*) FROM users WHERE 1=1
+            </SQLFragment>
+        </SQLStatement> 
+        
+        <SQLStatement method="COUNT_TABLE2">
+            <SQLFragment>
+                SELECT count(*) FROM ? WHERE 1=1;
+            </SQLFragment>
+        </SQLStatement>  
+        
+        <SQLStatement method="CREATE_CONFIG_TABLE">
+            <SQLFragment>
+                CREATE TABLE config (
+                id INTEGER AUTO_INCREMENT,
+                code VARCHAR(255) NOT NULL UNIQUE,
+                value VARCHAR(255),
+                type VARCHAR(255),
+                PRIMARY KEY (id));
+            </SQLFragment>
+        </SQLStatement>	
+        
+        <SQLStatement method="GET_CONFIG">
+            <SQLFragment>
+                SELECT
+            </SQLFragment>
+            <SQLFragment>
+                *
+                FROM config
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                WHERE {where}
+            </SQLFragment>            
+        </SQLStatement>
+        
+        <SQLStatement method="ADD_CONFIG">
+            <SQLFragment>
+                INSERT INTO config (code,value, type) VALUES (?,?,?);
+            </SQLFragment>
+        </SQLStatement>        
+        
+        <SQLStatement method="DELETE_CONFIG">
+            <SQLFragment>
+                DELETE FROM config WHERE code  = ?;
+            </SQLFragment>
+        </SQLStatement>
+        
+        <SQLStatement method="UPDATE_CONFIG">
+            <SQLFragment>
+                UPDATE config SET 
+                value=?,
+                type=? 
+                WHERE code = ?
+            </SQLFragment>
+        </SQLStatement>    
+        
+        <SQLStatement method="EXIST_CONFIG">
+            <SQLFragment>
+                SELECT count(code) FROM config WHERE code=?;
+            </SQLFragment>
+        </SQLStatement>    
+        
+        <SQLStatement method="GET_PERSON_LIDER">
+            <SQLFragment>
+                SELECT 
+                p.identification, CONCAT(p.firstName1,' ',p.lastName1), l.gobernacion, l.alcaldia, l.asamblea, l.consejo
+                FROM persons AS p , liders AS l
+                WHERE (l.identification=(@ced:=(SELECT lider FROM persons WHERE identification=?)) 
+                AND p.identification=@ced)
+            </SQLFragment>
+        </SQLStatement> 
+        
+        <SQLStatement method="GET_PERSON_NAMES">
+            <SQLFragment>
+                SELECT
+            </SQLFragment>
+            <SQLFragment>
+                identification, firstName1, firstName2, lastName1, lastName2
+                FROM persons            
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                WHERE {where}
+            </SQLFragment>
+        </SQLStatement> 
+        
+        <SQLStatement method="GET_LIDER_SUPPORT">
+            <SQLFragment>
+                SELECT 
+                *
+                FROM liders
+                WHERE identification=?
+            </SQLFragment>
+        </SQLStatement>
+        
+        
+        <SQLStatement method="CREATE_CONTRACTS_TABLE">
+            <SQLFragment>
+                CREATE TABLE contracts (
+                id INTEGER AUTO_INCREMENT,
+                idPerson INTEGER NOT NULL,
+                nombres VARCHAR(255),
+                placa VARCHAR(255),
+                vehiculo VARCHAR(255),
+                empresa VARCHAR(255),
+                telefono VARCHAR(255),
+                direccion VARCHAR(255),
+                valor DECIMAL(20,2),
+                saldo DECIMAL(20,2),
+                abonos VARCHAR(255),
+                tipo VARCHAR(255),
+                estado VARCHAR(255),                
+                lastUpdatedTime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                PRIMARY KEY (id));
+            </SQLFragment>
+        </SQLStatement>	
+        
+        <SQLStatement method="GET_CONTRACT">
+            <SQLFragment>
+                SELECT
+            </SQLFragment>
+            <SQLFragment>
+                *
+                FROM contracts            
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                WHERE {where}
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                ORDER BY {orderby}
+            </SQLFragment>
+        </SQLStatement>   
+        
+        <SQLStatement method="INSERT_CONTRACT">
+            <SQLFragment>
+                INSERT INTO contracts (idPerson,nombres,placa,vehiculo,empresa,telefono,
+                direccion,valor,saldo,abonos,tipo,estado) VALUES (?,?,?,?,?,?,?,?,?,?,?,?);
+            </SQLFragment>
+        </SQLStatement>	
+        
+        <SQLStatement method="UPDATE_CONTRACT">
+            <SQLFragment>
+                UPDATE contracts SET                 
+                idPerson = ?,
+                nombres = ?,
+                placa = ?,
+                vehiculo = ?,
+                empresa = ?,
+                telefono = ?,
+                direccion = ?,
+                valor = ?,
+                saldo = ?,
+                abonos = ?,
+                tipo = ?,
+                estado = ?
+                WHERE id =?
+            </SQLFragment>
+        </SQLStatement>
+        
+        <SQLStatement method="DELETE_CONTRACT">
+            <SQLFragment>
+                DELETE FROM contracts WHERE id  = ?;
+            </SQLFragment>
+        </SQLStatement>  
+        
+        
+        <SQLStatement method="CREATE_TYPE_VEHICLES_TABLE">
+            <SQLFragment>
+                CREATE TABLE types_vehicle (
+                id INTEGER AUTO_INCREMENT,
+                name VARCHAR(255) NOT NULL UNIQUE,
+                value DECIMAL(10,2),
+                PRIMARY KEY (id));
+            </SQLFragment>
+        </SQLStatement>	
+        
+        <SQLStatement method="GET_TYPE_VEHICLE">
+            <SQLFragment>
+                SELECT
+            </SQLFragment>
+            <SQLFragment>
+                *
+                FROM types_vehicle
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                WHERE {where}
+            </SQLFragment>            
+        </SQLStatement>
+        
+        <SQLStatement method="ADD_TYPE_VEHICLE">
+            <SQLFragment>
+                INSERT INTO types_vehicle (name,value) VALUES (?,?);
+            </SQLFragment>
+        </SQLStatement>        
+        
+        <SQLStatement method="DELETE_TYPE_VEHICLE">
+            <SQLFragment>
+                DELETE FROM types_vehicle WHERE id  = ?;
+            </SQLFragment>
+        </SQLStatement>
+        
+        <SQLStatement method="UPDATE_TYPE_VEHICLE">
+            <SQLFragment>
+                UPDATE types_vehicle SET 
+                name=?,
+                value=? 
+                WHERE id = ?
+            </SQLFragment>
+        </SQLStatement> 
+        
+        <SQLStatement method="CREATE_CANDIDATES_TABLE">
+            <SQLFragment>
+                CREATE TABLE candidates (
+                id INTEGER AUTO_INCREMENT,
+                identification VARCHAR(255) NOT NULL,
+                firstName1 VARCHAR(255),
+                firstName2 VARCHAR(255),
+                lastName1 VARCHAR(255),
+                lastName2 VARCHAR(255),
+                political VARCHAR(255),
+                scope VARCHAR(255) NOT NULL,
+                department VARCHAR(255),
+                municipality VARCHAR(255),
+                PRIMARY KEY (id));
+            </SQLFragment>
+        </SQLStatement>
+        
+        <SQLStatement method="ADD_CANDIDATE">
+            <SQLFragment>
+                INSERT INTO candidates (identification,firstName1,
+                firstName2,lastName1,lastName2,political,
+                scope,department,municipality) VALUES (?,?,?,?,?,?,?,?,?)
+            </SQLFragment>
+        </SQLStatement>   
+        
+        <SQLStatement method="GET_CANDIDATE">
+            <SQLFragment>
+                SELECT
+            </SQLFragment>
+            <SQLFragment>
+                *
+                FROM candidates
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                WHERE {where}
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                ORDER BY {orderby}
+            </SQLFragment>            
+        </SQLStatement>
+        
+        <SQLStatement method="GET_COMMUNES_LIST">
+            <SQLFragment>
+                SELECT
+            </SQLFragment>
+            <SQLFragment>
+                commune 
+                FROM neighborhoods               
+            </SQLFragment>
+            <SQLFragment>
+                GROUP BY commune
+            </SQLFragment>            
+        </SQLStatement>
+        
+        <SQLStatement method="GET_RANCHERY_LIST">
+            <SQLFragment>
+                SELECT
+            </SQLFragment>
+            <SQLFragment>
+                place1 
+                FROM persons
+                ORDER BY place1
+            </SQLFragment>
+            <SQLFragment>
+                GROUP BY place1
+            </SQLFragment>            
+        </SQLStatement>
+        
+        <SQLStatement method="CREATE_NOVELTYS_TABLE">
+            <SQLFragment>
+                CREATE TABLE noveltys (
+                id INTEGER AUTO_INCREMENT,
+                type VARCHAR(255) NOT NULL,
+                comment VARCHAR(1000),
+                lider VARCHAR(255),
+                person VARCHAR(255),
+                user VARCHAR(255),   
+                observation VARCHAR(500),                
+                lastUpdatedTime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                PRIMARY KEY (id));
+            </SQLFragment>
+        </SQLStatement>
+        
+        <SQLStatement method="ADD_NOVELTY">
+            <SQLFragment>
+                INSERT INTO noveltys (type,comment,lider,person,user,observation) VALUES (?,?,?,?,?,?)
+            </SQLFragment>
+        </SQLStatement>   
+        
+        <SQLStatement method="GET_NOVELTY">
+            <SQLFragment>
+                SELECT
+            </SQLFragment>
+            <SQLFragment>
+                *
+                FROM noveltys
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                WHERE {where}
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                ORDER BY {orderby}
+            </SQLFragment>            
+        </SQLStatement>
+        
+        <SQLStatement method="DELETE_NOVELTY">
+            <SQLFragment>
+                DELETE FROM noveltys WHERE id  = ?;
+            </SQLFragment>
+        </SQLStatement>
+        
+        <SQLStatement method="CREATE_UPDATES_TABLE">
+            <SQLFragment>
+                CREATE TABLE updates (
+                id INTEGER AUTO_INCREMENT,
+                lider VARCHAR(255) NOT NULL,                
+                status VARCHAR(1000),
+                registers INTEGER,
+                updates INTEGER,
+                lastUpdatedTime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                PRIMARY KEY (id));
+            </SQLFragment>
+        </SQLStatement>
+        
+        <SQLStatement method="CREATE_RESPONSIBLES_TABLE">
+            <SQLFragment>
+                CREATE TABLE responsibles (
+                id INTEGER AUTO_INCREMENT,
+                identification VARCHAR(25) NOT NULL UNIQUE,
+                name1 VARCHAR(100),
+                name2 VARCHAR(100),
+                lastname1 VARCHAR(100),
+                lastname2 VARCHAR(100),
+                cellphone VARCHAR(15),
+                address VARCHAR(255),            
+                PRIMARY KEY (id));
+            </SQLFragment>
+        </SQLStatement>
+        
+        <SQLStatement method="ADD_RESPONSIBLE">
+            <SQLFragment>
+                INSERT INTO responsibles (identification,name1,name2,lastname1,lastname2,
+                cellphone,address
+                ) VALUES (?,?,?,?,?,?,?)
+            </SQLFragment>
+        </SQLStatement>   
+        
+        <SQLStatement method="DELETE_RESPONSIBLE">
+            <SQLFragment>
+                DELETE FROM responsibles WHERE id  = ?;
+            </SQLFragment>
+        </SQLStatement>
+        
+         <SQLStatement method="GET_RESPONSIBLES_LIST">
+            <SQLFragment>
+                SELECT
+            </SQLFragment>
+            <SQLFragment>
+                * 
+                FROM responsibles               
+            </SQLFragment>    
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                WHERE {where}
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                ORDER BY {orderby}
+            </SQLFragment>        
+        </SQLStatement>
+        
+        <SQLStatement method="EXIST_CLAVE">
+            <SQLFragment>
+                SELECT count({query}) FROM {table} WHERE {query}={key};
+            </SQLFragment>
+        </SQLStatement>
+        
+        <SQLStatement method="GET_MAX_ID">
+            <SQLFragment>
+                SELECT max(id) FROM {table};
+            </SQLFragment>
+        </SQLStatement>
+                           
+        <SQLStatement method="GET_COMUNITY_LIST">
+            <SQLFragment>
+                SELECT
+            </SQLFragment>
+            <SQLFragment>
+                place1
+                FROM persons
+            </SQLFragment>
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                WHERE {where}
+            </SQLFragment>    
+            <SQLFragment excludeIfNamedParamEmpty="TRUE">
+                ORDER BY {orderby} 
+            </SQLFragment>
+            
+        </SQLStatement>
+                           
+                           
+
+    </DAOStatements>
+</DAOConfiguration>
